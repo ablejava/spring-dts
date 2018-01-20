@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>local-tran-jdbc</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Example project for JDBC transaction management.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,17 +35,6 @@
 			<version>5.1.39</version>
 		</dependency>
 
-
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 
 </project>
