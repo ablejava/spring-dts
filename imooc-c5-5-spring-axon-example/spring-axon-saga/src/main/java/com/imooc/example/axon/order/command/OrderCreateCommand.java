@@ -42,4 +42,15 @@ public class OrderCreateCommand {
     public Double getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "OrderCreateCommand{" +
+                "orderId='" + orderId + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", title='" + title + '\'' +
+                ", ticketId='" + ticketId + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
 }

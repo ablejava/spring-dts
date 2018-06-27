@@ -1,6 +1,9 @@
 package com.imooc.example.axon.order;
 
 import com.imooc.example.axon.order.command.OrderCreateCommand;
+import com.imooc.example.axon.order.query.OrderEntity;
+import com.imooc.example.axon.order.query.OrderEntityRepository;
+import com.imooc.example.axon.order.query.OrderId;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
@@ -21,6 +24,8 @@ public class OrderController {
     private CommandGateway commandGateway;
     @Autowired
     private QueryGateway queryGateway;
+    @Autowired
+    private OrderEntityRepository orderEntityRepository;
 
     @PostMapping("")
     public void create(@RequestBody Order order) {
@@ -30,8 +35,13 @@ public class OrderController {
         commandGateway.send(command, LoggingCallback.INSTANCE);
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/query/{orderId}")
     public Order get(@PathVariable String orderId) throws ExecutionException, InterruptedException {
-        return queryGateway.query(orderId, Order.class).get();
+        return queryGateway.query(new OrderId(orderId), Order.class).get();
+    }
+
+    @GetMapping("/{orderId}")
+    public OrderEntity getView(@PathVariable String orderId) {
+        return orderEntityRepository.findOne(orderId);
     }
 }

@@ -1,10 +1,12 @@
 package com.imooc.example.user;
 
-import com.imooc.example.order.command.OrderPayCommand;
+import com.imooc.example.user.command.OrderPayCommand;
 import com.imooc.example.user.command.CustomerChargeCommand;
 import com.imooc.example.user.command.CustomerCreateCommand;
 import com.imooc.example.user.command.CustomerDepositCommand;
 import com.imooc.example.user.event.*;
+import com.imooc.example.user.event.saga.OrderPaidEvent;
+import com.imooc.example.user.event.saga.OrderPayFailedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;

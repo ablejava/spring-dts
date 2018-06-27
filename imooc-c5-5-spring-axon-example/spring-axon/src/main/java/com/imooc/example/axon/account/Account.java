@@ -3,9 +3,9 @@ package com.imooc.example.axon.account;
 import com.imooc.example.axon.account.command.AccountCreateCommand;
 import com.imooc.example.axon.account.command.AccountDepositCommand;
 import com.imooc.example.axon.account.command.AccountWithdrawCommand;
-import com.imooc.example.axon.customer.event.AccountCreatedEvent;
-import com.imooc.example.axon.customer.event.AccountMoneyDepositedEvent;
-import com.imooc.example.axon.customer.event.AccountMoneyWithdrawnEvent;
+import com.imooc.example.axon.account.event.AccountCreatedEvent;
+import com.imooc.example.axon.account.event.AccountMoneyDepositedEvent;
+import com.imooc.example.axon.account.event.AccountMoneyWithdrawnEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -22,7 +22,7 @@ public class Account {
     @AggregateIdentifier
     private String accountId;
 
-    private Double balance;
+    private Double deposit;
 
     public Account() {
     }
@@ -39,7 +39,7 @@ public class Account {
 
     @CommandHandler
     public void handle(AccountWithdrawCommand command) {
-        if (balance - command.getAmount() >= 0) {
+        if (deposit >= command.getAmount()) {
             apply(new AccountMoneyWithdrawnEvent(command.getAccountId(), command.getAmount()));
         } else {
             throw new IllegalArgumentException("余额不足");
@@ -49,24 +49,24 @@ public class Account {
     @EventSourcingHandler
     protected void on(AccountCreatedEvent event) {
         this.accountId = event.getAccountId();
-        this.balance = 0.0;
+        this.deposit = 0d;
     }
 
     @EventSourcingHandler
     protected void on(AccountMoneyDepositedEvent event) {
-        this.balance = balance + event.getAmount();
+        this.deposit += event.getAmount();
     }
 
     @EventSourcingHandler
     protected void on(AccountMoneyWithdrawnEvent event) {
-        this.balance = balance - event.getAmount();
+        this.deposit -= event.getAmount();
     }
 
     public String getAccountId() {
         return accountId;
     }
 
-    public Double getBalance() {
-        return balance;
+    public Double getDeposit() {
+        return deposit;
     }
 }

@@ -4,7 +4,7 @@ package com.imooc.example.order;
 import com.imooc.example.order.command.OrderCreateCommand;
 import com.imooc.example.order.command.OrderFailCommand;
 import com.imooc.example.order.command.OrderFinishCommand;
-import com.imooc.example.order.event.OrderCreatedEvent;
+import com.imooc.example.order.event.saga.OrderCreatedEvent;
 import com.imooc.example.order.event.OrderFailedEvent;
 import com.imooc.example.order.event.OrderFinishedEvent;
 import org.axonframework.commandhandling.CommandHandler;

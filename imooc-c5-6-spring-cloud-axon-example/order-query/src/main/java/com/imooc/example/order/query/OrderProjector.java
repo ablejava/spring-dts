@@ -1,7 +1,7 @@
 package com.imooc.example.order.query;
 
 
-import com.imooc.example.order.event.OrderCreatedEvent;
+import com.imooc.example.order.event.saga.OrderCreatedEvent;
 import com.imooc.example.order.event.OrderFailedEvent;
 import com.imooc.example.order.event.OrderFinishedEvent;
 import com.imooc.example.order.event.OrderPaidEvent;

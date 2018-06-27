@@ -18,36 +18,50 @@ package com.imooc.example.order;
 
 import com.imooc.example.order.command.OrderFailCommand;
 import com.imooc.example.order.command.OrderFinishCommand;
-import com.imooc.example.order.command.OrderPayCommand;
-import com.imooc.example.order.event.OrderCreatedEvent;
+import com.imooc.example.order.event.OrderFailedEvent;
+import com.imooc.example.order.event.OrderFinishedEvent;
+import com.imooc.example.order.event.saga.OrderCreatedEvent;
 import com.imooc.example.ticket.command.OrderTicketMoveCommand;
 import com.imooc.example.ticket.command.OrderTicketPreserveCommand;
 import com.imooc.example.ticket.command.OrderTicketUnlockCommand;
-import com.imooc.example.ticket.event.OrderTicketMovedEvent;
-import com.imooc.example.ticket.event.OrderTicketPreserveFailedEvent;
-import com.imooc.example.ticket.event.OrderTicketPreservedEvent;
-import com.imooc.example.user.event.OrderPaidEvent;
-import com.imooc.example.user.event.OrderPayFailedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketMovedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketPreserveFailedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketPreservedEvent;
+import com.imooc.example.user.command.OrderPayCommand;
+import com.imooc.example.user.event.saga.OrderPaidEvent;
+import com.imooc.example.user.event.saga.OrderPayFailedEvent;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
 import org.axonframework.eventhandling.saga.StartSaga;
+import org.axonframework.eventhandling.scheduling.EventScheduler;
+import org.axonframework.eventhandling.scheduling.ScheduleToken;
 import org.axonframework.spring.stereotype.Saga;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.Instant;
 
 import static org.axonframework.commandhandling.GenericCommandMessage.asCommandMessage;
 
 @Saga
 public class OrderManagementSaga {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OrderManagementSaga.class);
+
     @Autowired
     private transient CommandBus commandBus;
+    @Autowired
+    private transient EventScheduler eventScheduler;
 
     private String orderId;
     private String customerId;
     private String ticketId;
     private Double amount;
+
+    private ScheduleToken timeoutToken;
 
     @StartSaga
     @SagaEventHandler(associationProperty = "orderId")
@@ -56,6 +70,8 @@ public class OrderManagementSaga {
         this.customerId = event.getCustomerId();
         this.ticketId = event.getTicketId();
         this.amount = event.getAmount();
+
+        timeoutToken = eventScheduler.schedule(Instant.now().plusSeconds(60), new OrderPayFailedEvent(this.orderId));
 
         OrderTicketPreserveCommand command = new OrderTicketPreserveCommand(orderId, ticketId, customerId);
         commandBus.dispatch(asCommandMessage(command), LoggingCallback.INSTANCE);
@@ -70,7 +86,7 @@ public class OrderManagementSaga {
     @SagaEventHandler(associationProperty = "orderId")
     @EndSaga
     public void on(OrderTicketPreserveFailedEvent event) {
-        OrderFailCommand command = new OrderFailCommand(event.getOrderId(), "锁票失败");
+        OrderFailCommand command = new OrderFailCommand(event.getOrderId(), "Preserve Failed");
         commandBus.dispatch(asCommandMessage(command), LoggingCallback.INSTANCE);
     }
 
@@ -81,20 +97,36 @@ public class OrderManagementSaga {
     }
 
     @SagaEventHandler(associationProperty = "orderId")
-    @EndSaga
     public void on(OrderPayFailedEvent event) {
         OrderTicketUnlockCommand command = new OrderTicketUnlockCommand(ticketId, customerId);
         commandBus.dispatch(asCommandMessage(command), LoggingCallback.INSTANCE);
 
-        OrderFailCommand failCommand = new OrderFailCommand(event.getOrderId(), "扣费失败");
+        OrderFailCommand failCommand = new OrderFailCommand(event.getOrderId(), "Pay Failed");
         commandBus.dispatch(asCommandMessage(failCommand), LoggingCallback.INSTANCE);
     }
 
     @SagaEventHandler(associationProperty = "orderId")
-    @EndSaga
     public void on(OrderTicketMovedEvent event) {
         OrderFinishCommand command = new OrderFinishCommand(orderId);
         commandBus.dispatch(asCommandMessage(command), LoggingCallback.INSTANCE);
+    }
+
+    @SagaEventHandler(associationProperty = "orderId")
+    @EndSaga
+    public void on(OrderFinishedEvent event) {
+        LOG.info("Order:{} finished.", event.getOrderId());
+        if (this.timeoutToken != null) {
+            eventScheduler.cancelSchedule(this.timeoutToken);
+        }
+    }
+
+    @SagaEventHandler(associationProperty = "orderId")
+    @EndSaga
+    public void on(OrderFailedEvent event) {
+        LOG.info("Order:{} failed.", event.getOrderId());
+        if (this.timeoutToken != null) {
+            eventScheduler.cancelSchedule(this.timeoutToken);
+        }
     }
 
 }

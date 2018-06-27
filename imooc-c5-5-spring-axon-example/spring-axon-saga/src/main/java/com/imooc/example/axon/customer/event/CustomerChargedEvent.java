@@ -10,6 +10,8 @@ public class CustomerChargedEvent {
 
     private Double amount;
 
+    public CustomerChargedEvent() {}
+
     public CustomerChargedEvent(String customerId, Double amount) {
         this.customerId = customerId;
         this.amount = amount;

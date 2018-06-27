@@ -2,6 +2,8 @@ package com.imooc.example.axon.account;
 
 import com.imooc.example.axon.account.command.AccountCreateCommand;
 import com.imooc.example.axon.account.command.AccountDepositCommand;
+import com.imooc.example.axon.account.query.AccountEntity;
+import com.imooc.example.axon.account.query.AccountEntityRepository;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class AccountController {
     @Autowired
     private CommandGateway commandGateway;
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountEntityRepository accountEntityRepository;
 
     @PostMapping("")
     public CompletableFuture<Object> createBankAccount(@RequestParam String name) {
@@ -50,12 +52,12 @@ public class AccountController {
     @GetMapping("/{accountId}")
     public AccountEntity getAccountById(@PathVariable String accountId) {
         log.info("Request Account with id: {}", accountId);
-        return accountRepository.findOne(accountId);
+        return accountEntityRepository.findOne(accountId);
     }
 
     @GetMapping("")
     public List<AccountEntity> getAllAccounts() {
         log.info("Request all Accounts");
-        return accountRepository.findAll();
+        return accountEntityRepository.findAll();
     }
 }

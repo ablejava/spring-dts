@@ -7,7 +7,7 @@
 
 
     <logger name="com.imooc" level="DEBUG"/>
-    <property name="DEBUG_LEVEL" value="INFO" />
+    <property name="DEBUG_LEVEL" value="DEBUG" />
 
     <logger name="org.springframework.transaction" level="${DEBUG_LEVEL}"/>
     <logger name="org.springframework.jms" level="${DEBUG_LEVEL}"/>

@@ -6,8 +6,9 @@ import com.imooc.example.axon.customer.command.CustomerDepositCommand;
 import com.imooc.example.axon.customer.event.CustomerChargedEvent;
 import com.imooc.example.axon.customer.event.CustomerCreatedEvent;
 import com.imooc.example.axon.customer.event.CustomerDepositedEvent;
-import com.imooc.example.axon.order.Order;
-import com.imooc.example.axon.order.event.OrderPaidEvent;
+import com.imooc.example.axon.customer.command.OrderPayCommand;
+import com.imooc.example.axon.customer.event.OrderPaidEvent;
+import com.imooc.example.axon.customer.event.OrderPayFailedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -23,7 +24,7 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 @Aggregate
 public class Customer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Order.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Customer.class);
 
     @AggregateIdentifier
     private String customerId;
@@ -53,6 +54,18 @@ public class Customer {
             apply(new CustomerChargedEvent(command.getCustomerId(), command.getAmount()));
         } else {
             throw new IllegalArgumentException("余额不足");
+        }
+    }
+
+    @CommandHandler
+    public void handle(OrderPayCommand command) {
+        if (command.getAmount() <= 0) {
+            // do nothing, test the Scheduled Event.
+        } else if (this.deposit < command.getAmount()) {
+            LOG.error("Not enough deposit");
+            apply(new OrderPayFailedEvent(command.getOrderId()));
+        } else {
+            apply(new OrderPaidEvent(command.getOrderId(), command.getCustomerId(), command.getAmount()));
         }
     }
 

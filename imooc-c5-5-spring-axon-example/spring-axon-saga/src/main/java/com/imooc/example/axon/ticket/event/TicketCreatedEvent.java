@@ -9,6 +9,8 @@ public class TicketCreatedEvent {
 
     private String name;
 
+    public TicketCreatedEvent() {}
+
     public TicketCreatedEvent(String ticketId, String name) {
         this.ticketId = ticketId;
         this.name = name;

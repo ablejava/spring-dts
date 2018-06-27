@@ -6,6 +6,9 @@ import com.imooc.example.ticket.command.OrderTicketPreserveCommand;
 import com.imooc.example.ticket.command.OrderTicketUnlockCommand;
 import com.imooc.example.ticket.command.TicketCreateCommand;
 import com.imooc.example.ticket.event.*;
+import com.imooc.example.ticket.event.saga.OrderTicketMovedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketPreserveFailedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketPreservedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -39,13 +42,14 @@ public class Ticket {
 
     @CommandHandler
     public void handle(OrderTicketPreserveCommand command) {
+
         if (this.owner != null) {
+            LOG.error("Ticket is owned.");
             apply(new OrderTicketPreserveFailedEvent(command.getOrderId()));
-        }
-        if (this.lockUser == null) {
-            apply(new OrderTicketPreservedEvent(command.getOrderId(), command.getCustomerId(), command.getTicketId()));
-        } else if (this.lockUser.equals(command.getCustomerId())) {
+        } else if (this.lockUser != null && this.lockUser.equals(command.getCustomerId())) {
             LOG.info("duplicated command");
+        } else if (this.lockUser == null) {
+            apply(new OrderTicketPreservedEvent(command.getOrderId(), command.getCustomerId(), command.getTicketId()));
         } else {
             apply(new OrderTicketPreserveFailedEvent(command.getOrderId()));
         }

@@ -30,6 +30,7 @@ public class AxonConfig {
         return new Queue("ticket", true);
     }
 
+
     @Bean
     public Exchange exchange(){
         return ExchangeBuilder.topicExchange(exchangeName).durable(true).build();
@@ -38,6 +39,16 @@ public class AxonConfig {
     @Bean
     public Binding ticketQueueBinding() {
         return BindingBuilder.bind(ticketQueue()).to(exchange()).with("com.imooc.example.ticket.event.#").noargs();
+    }
+
+    @Bean
+    public Queue ticketSagaQueue(){
+        return new Queue("saga", true);
+    }
+
+    @Bean
+    public Binding ticketSagaQueueBinding() {
+        return BindingBuilder.bind(ticketSagaQueue()).to(exchange()).with("com.imooc.example.ticket.event.saga.#").noargs();
     }
 
     @Bean

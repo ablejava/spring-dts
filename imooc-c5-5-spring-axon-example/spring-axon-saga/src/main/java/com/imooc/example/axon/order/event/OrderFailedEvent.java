@@ -8,6 +8,8 @@ public class OrderFailedEvent {
     private String reason;
     private String orderId;
 
+    public OrderFailedEvent() {}
+
     public OrderFailedEvent(String orderId, String reason) {
         this.orderId = orderId;
         this.reason = reason;

@@ -19,6 +19,8 @@ public class OrderCreatedEvent {
 
     private ZonedDateTime createdDate;
 
+    public OrderCreatedEvent() {}
+
     public OrderCreatedEvent(String orderId, String customerId, String title, String ticketId, Double amount, ZonedDateTime createdDate) {
         this.orderId = orderId;
         this.customerId = customerId;

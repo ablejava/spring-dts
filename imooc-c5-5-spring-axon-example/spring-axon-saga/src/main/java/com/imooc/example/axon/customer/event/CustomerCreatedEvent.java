@@ -9,6 +9,8 @@ public class CustomerCreatedEvent {
     private String name;
     private String password;
 
+    public CustomerCreatedEvent() {}
+
     public CustomerCreatedEvent(String customerId, String name, String password) {
         this.customerId = customerId;
         this.name = name;

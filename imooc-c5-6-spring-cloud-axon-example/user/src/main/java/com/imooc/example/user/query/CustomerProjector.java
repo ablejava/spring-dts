@@ -3,7 +3,8 @@ package com.imooc.example.user.query;
 import com.imooc.example.user.event.CustomerChargedEvent;
 import com.imooc.example.user.event.CustomerCreatedEvent;
 import com.imooc.example.user.event.CustomerDepositedEvent;
-import com.imooc.example.user.event.OrderPaidEvent;
+import com.imooc.example.user.event.saga.OrderPaidEvent;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
  * Created by mavlarn on 2018/5/22.
  */
 @Service
+@ProcessingGroup("UserEventProcessor")
 public class CustomerProjector {
 
     @Autowired

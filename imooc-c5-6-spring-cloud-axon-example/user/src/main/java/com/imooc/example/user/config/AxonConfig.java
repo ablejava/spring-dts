@@ -41,6 +41,16 @@ public class AxonConfig {
     }
 
     @Bean
+    public Queue ticketSagaQueue(){
+        return new Queue("saga", true);
+    }
+
+    @Bean
+    public Binding ticketSagaQueueBinding() {
+        return BindingBuilder.bind(ticketSagaQueue()).to(exchange()).with("com.imooc.example.user.event.saga.#").noargs();
+    }
+
+    @Bean
     public SpringAMQPMessageSource userMessageSource(Serializer serializer) {
         return new SpringAMQPMessageSource(serializer){
             @RabbitListener(queues = "user")

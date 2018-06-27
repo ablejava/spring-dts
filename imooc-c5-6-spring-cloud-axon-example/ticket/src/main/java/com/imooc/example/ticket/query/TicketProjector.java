@@ -1,7 +1,7 @@
 package com.imooc.example.ticket.query;
 
-import com.imooc.example.ticket.event.OrderTicketMovedEvent;
-import com.imooc.example.ticket.event.OrderTicketPreservedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketMovedEvent;
+import com.imooc.example.ticket.event.saga.OrderTicketPreservedEvent;
 import com.imooc.example.ticket.event.OrderTicketUnlockedEvent;
 import com.imooc.example.ticket.event.TicketCreatedEvent;
 import org.axonframework.config.ProcessingGroup;
