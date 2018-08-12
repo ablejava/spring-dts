@@ -5,6 +5,7 @@ import com.immoc.example.springtx.domain.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,24 @@ public class CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private JmsTemplate jmsTemplate;
+
+    @Transactional
+    @JmsListener(destination = "customer:msg:new")
+    public void handle(String msg) {
+        LOG.info("Get msg1:{}", msg);
+        Customer customer = new Customer();
+        customer.setUsername(msg);
+        customer.setDeposit(100);
+        customerRepository.save(customer);
+        if (msg.contains("error1")) {
+            throw new RuntimeException("Error1");
+        }
+
+        jmsTemplate.convertAndSend("customer:msg:reply", msg + " created.");
+        if (msg.contains("error2")) {
+            throw new RuntimeException("Error2");
+        }
+    }
 
     @Transactional
     public Customer create(Customer customer) {

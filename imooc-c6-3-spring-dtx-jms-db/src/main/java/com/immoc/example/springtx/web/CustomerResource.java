@@ -32,6 +32,11 @@ public class CustomerResource {
         return customerService.create(customer);
     }
 
+    @PostMapping("/msg")
+    public void create(@RequestBody Customer customer) {
+        jmsTemplate.convertAndSend("customer:msg:new", customer.getUsername());
+    }
+
     @PostMapping("/code")
     public Customer createInCode(@RequestBody Customer customer) {
         return customerServiceInCode.create(customer);
