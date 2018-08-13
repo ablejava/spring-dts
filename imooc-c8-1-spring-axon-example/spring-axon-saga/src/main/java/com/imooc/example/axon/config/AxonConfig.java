@@ -22,6 +22,7 @@ public class AxonConfig {
     @Autowired
     AxonConfiguration axonConfiguration;
 
+//    注册一个独立的CommandHandler类的方法
 //    @Bean
 //    public OrderCommandHandler orderCommandHandler() {
 //        Repository<Order> orderRepository = axonConfiguration.repository(Order.class);
@@ -42,13 +43,4 @@ public class AxonConfig {
     public EventScheduler eventScheduler(EventBus eventBus, TransactionManager transactionManager) {
         return new SimpleEventScheduler(Executors.newScheduledThreadPool(1), eventBus, transactionManager);
     }
-//    @Bean
-//    Serializer serializer() {
-//        return new JacksonSerializer();
-//    }
-
-//    @Bean
-//    JpaEventStorageEngine jpaEventStorageEngine() throws SQLException {
-//        return new JpaEventStorageEngine(serializer(), null, dataSource, entityManagerProvider, transactionManager);
-//    }
 }

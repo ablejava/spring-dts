@@ -47,18 +47,18 @@ public class Account {
     }
 
     @EventSourcingHandler
-    protected void on(AccountCreatedEvent event) {
+    public void on(AccountCreatedEvent event) {
         this.accountId = event.getAccountId();
         this.deposit = 0d;
     }
 
     @EventSourcingHandler
-    protected void on(AccountMoneyDepositedEvent event) {
+    public void on(AccountMoneyDepositedEvent event) {
         this.deposit += event.getAmount();
     }
 
     @EventSourcingHandler
-    protected void on(AccountMoneyWithdrawnEvent event) {
+    public void on(AccountMoneyWithdrawnEvent event) {
         this.deposit -= event.getAmount();
     }
 

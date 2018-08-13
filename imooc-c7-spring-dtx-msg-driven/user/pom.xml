@@ -29,6 +29,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-feign</artifactId>
+			<!--<artifactId>spring-cloud-starter-openfeign</artifactId> 如果feign client出错，可能需要这个-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
