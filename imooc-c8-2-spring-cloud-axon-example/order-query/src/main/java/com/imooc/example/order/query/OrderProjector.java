@@ -4,7 +4,7 @@ package com.imooc.example.order.query;
 import com.imooc.example.order.event.saga.OrderCreatedEvent;
 import com.imooc.example.order.event.OrderFailedEvent;
 import com.imooc.example.order.event.OrderFinishedEvent;
-import com.imooc.example.order.event.OrderPaidEvent;
+import com.imooc.example.user.event.saga.OrderPaidEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.springframework.beans.factory.annotation.Autowired;
