@@ -8,6 +8,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +31,7 @@ public class CustomerService {
         jmsTemplate.setReceiveTimeout(3000);
     }
 
+    @Transactional
     @JmsListener(destination = "customer:msg:new", containerFactory = "msgFactory")
     public void handle(String msg) {
         LOG.debug("Get JMS message to from customer:{}", msg);

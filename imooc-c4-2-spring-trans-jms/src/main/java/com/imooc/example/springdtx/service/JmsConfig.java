@@ -1,7 +1,9 @@
 package com.imooc.example.springdtx.service;
 
+import org.apache.activemq.command.ActiveMQQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
 
 /**
  * Created by mavlarn on 2018/1/26.
@@ -21,6 +24,9 @@ import javax.jms.ConnectionFactory;
 @Configuration
 public class JmsConfig {
     private static final Logger LOG = LoggerFactory.getLogger(CustomerService.class);
+
+    @Value("${myQueue}")
+    private String myQueue;
 
     @Bean
     public JmsTemplate initJmsTemplate(ConnectionFactory connectionFactory) {
@@ -48,4 +54,11 @@ public class JmsConfig {
         return new JmsTransactionManager(connectionFactory);
     }
 
+
+
+    @Bean
+    public Queue queue() {
+        System.out.println(myQueue);
+        return new ActiveMQQueue(myQueue);
+    }
 }

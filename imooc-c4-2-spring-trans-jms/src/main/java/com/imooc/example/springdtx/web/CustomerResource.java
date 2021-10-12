@@ -14,6 +14,7 @@ public class CustomerResource {
 
     @Autowired
     JmsTemplate jmsTemplate;
+
     @Autowired
     private CustomerService customerService;
 
@@ -21,6 +22,7 @@ public class CustomerResource {
     public void createMsgWithListener(@RequestParam String msg) {
         jmsTemplate.convertAndSend("customer:msg:new", msg);
     }
+
     @PostMapping("/message1/direct")
     public void createMsgDirect(@RequestParam String msg) {
         customerService.handle(msg);
@@ -30,6 +32,7 @@ public class CustomerResource {
     public void createMsg2WithListener(@RequestParam String msg) {
         jmsTemplate.convertAndSend("customer:msg2:new", msg);
     }
+
     @PostMapping("/message2/direct")
     public void createMsg2Direct(@RequestParam String msg) {
         customerService.handle2(msg);
