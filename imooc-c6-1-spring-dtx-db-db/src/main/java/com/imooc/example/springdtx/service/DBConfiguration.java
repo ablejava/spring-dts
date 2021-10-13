@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 public class DBConfiguration {
 
     @Bean
-    @Primary
+    @Primary // 通过注解方式定时DataSourceTransactionManager，@Primary spring会优先使用定义的DataSource
     @ConfigurationProperties(prefix = "spring.ds_user")
     public DataSourceProperties userDataSourceProperties() {
         return new DataSourceProperties();
